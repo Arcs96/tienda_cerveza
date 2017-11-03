@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cervezas de importación{% endblock %}
+
+{% block body %}
+
+  <div class="w3-container">
+  <h2>Cervezas Artesanales</h2>
+
+  <br>
+
+  <div class="w3-card-4" style="width:50%">
+    <img src="{{cerveza.foto}}" alt="Mountain View">
+    <div class="w3-container w3-center">
+      <div align="left">
+
+         <b>Nombre:</b>         {{cerveza.nombre}}   <br>
+         <b>País:</b>           {{cerveza.pais}}     <br>
+         <b>Población:</b>      {{cerveza.poblacion}}<br>
+         <b>Tipo:</b>           {{cerveza.tipo}}     <br>
+
+         <!-- Según sea 1/0 el valor obtenido del bool 'importacion',
+              indicamos si la cerveza es o no de importación -->
+
+         {% if cerveza.importacion %}
+         <b>Importación:</b>    Si  <br>
+         {% else %}
+         <b>Importación:</b>    No  <br>
+         {% endif %}
+
+         <b>Almacenamiento:</b> {{cerveza.fechaAlmacenamiento | date('Y-M-D')}}<br>
+         <b>Cantidad:</b>       {{cerveza.cantidad}} cl.
+
+      </div>
+    </div>
+  </div>
+  </div>
+
+  </div>
+
+  <br>
+
+{% endblock %}
