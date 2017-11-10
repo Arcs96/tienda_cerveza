@@ -5,6 +5,8 @@ namespace TiendaBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use TiendaBundle\Entity\Cerveza;
+use TiendaBundle\Form\CervezaType;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -56,5 +58,50 @@ class DefaultController extends Controller
 
       $mDoct->flush($cerveza);
       return $this->redirectToRoute('cervezas_listar');
+    }
+
+    /**
+     * @Route("/forminsert", name="forminsert")
+     */
+    public function formAction(Request $request)
+    {
+        $cerveza = new Cerveza();
+        $form = $this->createForm(CervezaType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+          // $form->getData() holds the submitted values
+          // but, the original `$task` variable has also been updated
+          $cerveza = $form->getData();
+
+          // ... perform some action, such as saving the task to the database
+          // for example, if Task is a Doctrine entity, save it!
+          $em = $this->getDoctrine()->getManager();
+          $em->persist($cerveza);
+          $em->flush();
+
+          return $this->redirectToRoute('formulario');
+    }
+        return $this->render('TiendaBundle:Cerveza:form.html.twig',array("form"=>$form->createView()));
+    }
+
+    /**
+     * @Route("/formupdate/{id}", name="formupdate")
+     */
+    public function formUpdateAction(Request $request,$id)
+    {
+      $cerveza = $this->getDoctrine()->getRepository('TiendaBundle:Cerveza')->find($id);
+      if(!$cerveza){return $this->redirectToRoute('cervezas_listar');}
+
+      $form = $this->createForm(CervezaType::class,$cerveza);
+      $form->handleRequest($request);
+
+      if ($form->isSubmitted() && $form->isValid()){
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($cerveza);
+        $em->flush();
+        return $this->redirectToRoute('cervezas_listar');
+      }
+      return $this->render('TiendaBundle:Cerveza:form.html.twig',array("form"=>$form->createView()));
     }
 }
